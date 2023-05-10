@@ -127,8 +127,8 @@ void deleteElemAfter(lElem* prev) {
 /// <param name="a">pointer to head of the list</param>
 /// <param name="c">coefficent that should be added</param>
 /// <param name="pos">index where to add new element</param>
-void addElem(lElem* a, Coef c, int pos) {
-	lElem* b = a->next;
+void addElem(lElem* &a, Coef c, int pos) {
+	lElem* b = a;
 	while (b->next != nullptr) {
 		if (eqSt(c.st, b->next->c.st)) {
 			deleteElemAfter(b);
@@ -136,7 +136,7 @@ void addElem(lElem* a, Coef c, int pos) {
 		}
 		b = b->next;
 	}
-	b = a->next;
+	b = a;
 	for (int i = 0; i < pos && b->next != nullptr; i++) {
 		b = b->next;
 	}
@@ -217,17 +217,36 @@ int* findStMin(lElem* list) {
 }
 
 int main() {
+	setlocale(LC_ALL, "rus");
 	ifstream in("polynom.txt");
 	ofstream out("outPoly.txt");
 
 	lElem* list = createList(in);
 	lElem* b = list->next;
+	cout << "Список создан\n";
 
+	outList(list, out);
+	cout << "Полином выведен в файл\n"; system("pause");
+	out.close();
+	out.open("outPoly.txt");
+
+	Coef c{ 2, {1, 2, 1} };
+	addElem(list, c, 0);
+	cout << "\nЭлемент 2xy^2z добавлен на 0 позицию\n";
+	system("pause");
 	int a[3]{ 1, 1, 1 };
 	taskE(list, a);
+	cout << "Удалены все элементы, совпадающие с вектором 1 1 1 и чётными коэф-ами\n";
 	outList(list, out);
+	system("pause");
+	
+	cout << "Значение полинома (1 1 1) " << evaluate(list, a) << '\n';
+	int* st = findStMin(list);
+	cout << "Вектор степеней при наименьшем коэф-те " << st[0] << ' '<< st[1] << ' ' << st[2];
 
 	deleteList(list);
+	cout << "\nСписок удалён";
+	system("pause");
 	in.close();
 	out.close();
 
