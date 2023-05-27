@@ -208,7 +208,7 @@ int* findStMin(lElem* list) {
 		if (list->c.value < m->c.value) m = list;
 		list = list->next;
 	}
-	int* stm = new int[3]{m->c.st[0], m->c.st[1], m->c.st[2]};5
+	int* stm = new int[3]{m->c.st[0], m->c.st[1], m->c.st[2]};
 	return stm;
 }
 
