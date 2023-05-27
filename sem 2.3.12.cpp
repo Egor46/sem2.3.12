@@ -98,12 +98,12 @@ void outList(lElem* first, ofstream& out) { // ещё доделать
 /// task C, no need to describe
 /// </summary>
 /// <param name="a">pointer to first element</param>
-void deleteList(lElem* a) {
-	lElem* cur = a->next;
+void deleteList(lElem* &a) {
+	lElem* cur = a;
 	while (cur != nullptr) {
+		cur = a->next;
 		delete a;
 		a = cur;
-		cur = cur->next;
 	}
 }
 
@@ -159,7 +159,7 @@ void addElem(lElem* &a, Coef c, int pos) {
 /// </summary>
 /// <param name="st">вектор степеней</param>
 void taskE(lElem* first, int st[3]) {
-	lElem* a = first->next;
+	lElem* a = first;
 	while (a->next != nullptr) {
 		if (eqSt(st, a->next->c.st) && a->next->c.value % 2 == 0) {
 			deleteElemAfter(a);
@@ -202,17 +202,13 @@ double evaluate(lElem* a, int coord[3]) {
 /// <returns>vector of elems</returns>
 int* findStMin(lElem* list) {
 	assert(list->next != nullptr);
-	lElem* cpy = list->next;
-	int m = cpy->c.value;
-	while (cpy != nullptr) {
-		if (cpy->c.value < m) m = cpy->c.value;
-		cpy = cpy->next;
+	lElem* m = list->next;
+	list = list->next;
+	while (list != nullptr) {
+		if (list->c.value < m->c.value) m = list;
+		list = list->next;
 	}
-	cpy = list->next;
-	while (cpy->c.value != m) {
-		cpy = cpy->next;
-	}
-	int* stm = new int[3] {cpy->c.st[0], cpy->c.st[1], cpy->c.st[2]};
+	int* stm = new int[3]{m->c.st[0], m->c.st[1], m->c.st[2]};
 	return stm;
 }
 
@@ -227,16 +223,17 @@ int main() {
 
 	outList(list, out);
 	cout << "Полином выведен в файл\n"; system("pause");
-	out.close();
-	out.open("outPoly.txt");
+	out << '\n';
 
 	Coef c{ 2, {1, 2, 1} };
 	addElem(list, c, 0);
 	cout << "\nЭлемент 2xy^2z добавлен на 0 позицию\n";
 	system("pause");
+
 	int a[3]{ 1, 1, 1 };
 	taskE(list, a);
 	cout << "Удалены все элементы, совпадающие с вектором 1 1 1 и чётными коэф-ами\n";
+
 	outList(list, out);
 	system("pause");
 	
